@@ -1,13 +1,24 @@
 var diceDom = document.querySelector(".dice"); // querySelector нь browser ийг илүү ачааллуулдаг тул дахин энэ Dom ийг дуудхад дахин querySelect хийлгүйгээр энийгээ нэг хувьсагчид хадгалж өгөөд тэгээд энэ Dom ийг ашиглахаар бол энэ хувьсагчийг дуудхад лл хангалттай юм
 //Тоглогчийн ээлжийг хадгалдаг хувьсагч, нэгдүгээр тоглогчийг 0, хоёрдугаар тоглогчийг 1 гэж тэмдэглэе!
+
+//Тоглоом дууссан үгүйг шалгах төлөвийн хувьсагч хэрэгтэй
+var isGameOver;
+
 var activePlayer = 0;
 //Тоглогчдын цуглуулсан оноог харуулдаг хувьсагч
 var scores = [0, 0];
 //Тоглогчдын эээлжиндээ цуглуулж байгаа оноог хадгалдаг хувьсагч
 var roundScores = 0;
+
+document.querySelector(".btn-new").addEventListener("click", newGame);
+
 newGame();
+//Шинээр тоглоомийг эхлүүлэх eventListener
 //Тоглоомд шинээр бэлтгэе.
 function newGame() {
+  //Тоглоомыг эхэллээ гэсэн төлөвт оруулна
+  isGameOver = false;
+
   //Тоглогчийн ээлжийг хадгалдаг хувьсагч, нэгдүгээр тоглогчийг 0, хоёрдугаар тоглогчийг 1 гэж тэмдэглэе!
   activePlayer = 0;
   //Тоглогчдын цуглуулсан оноог харуулдаг хувьсагч
@@ -34,51 +45,67 @@ function newGame() {
   diceDom.style.display = "none";
 }
 document.querySelector(".btn-roll").addEventListener("click", function () {
-  //Шооны зургыг веб дээр гаргаж ирнэ.
-  diceDom.style.display = "block";
+  if (isGameOver === false) {
+    //Шооны зургыг веб дээр гаргаж ирнэ.
+    diceDom.style.display = "block";
 
-  //1 - 6 доторх санамсаргүй тоо гаргаж ирнэ
-  var diceNumber = Math.floor(Math.random() * 6) + 1;
+    //1 - 6 доторх санамсаргүй тоо гаргаж ирнэ
+    var diceNumber = Math.floor(Math.random() * 6) + 1;
 
-  //Буусан санамсаргүй тоонд харгалзах шооны зургыг веб дээр гаргаж ирнэ.
-  diceDom.src = "dice-" + diceNumber + ".png";
+    //Буусан санамсаргүй тоонд харгалзах шооны зургыг веб дээр гаргаж ирнэ.
+    diceDom.src = "dice-" + diceNumber + ".png";
 
-  //Буусан шооны тоо маань 1 ээс ялгаатай тоо бол идэвхитэй тоглогчийн ээлжинй оноог нэмэгдүүлнэ
+    //Буусан шооны тоо маань 1 ээс ялгаатай тоо бол идэвхитэй тоглогчийн ээлжинй оноог нэмэгдүүлнэ
 
-  if (diceNumber !== 1) {
-    //1 ээс ялгаатай тоо буулаа буусан тоог тоглогчид нэмж өгнө
-    roundScores = roundScores + diceNumber;
-    document.getElementById(
-      "current-" + activePlayer
-    ).textContent = roundScores;
+    if (diceNumber !== 1) {
+      //1 ээс ялгаатай тоо буулаа буусан тоог тоглогчид нэмж өгнө
+      roundScores = roundScores + diceNumber;
+      document.getElementById(
+        "current-" + activePlayer
+      ).textContent = roundScores;
+    } else {
+      //1 буусан тул тоглогчийн ээлжийг энэ хэсэгт сольж өгнө
+      switchToNextPlayer();
+    }
   } else {
-    //1 буусан тул тоглогчийн ээлжийг энэ хэсэгт сольж өгнө
-    switchToNextPlayer();
+    alert(
+      "Тоглоом дууссан байна аа NEW GAME товчыг даран дахин тоглоомийг эхлүүлнэ үү!"
+    );
   }
 }); //Энэ нь eventListener function маань click function болон shooShid гэсэн function ийг callBack ашиглан argument болгон авч байна аа callBack нь function дотор funtction Argument болгож авч тэгээд тэр function ийг ашиглахийг хэлнэ. Anonymous нь function ийг нэргүйгээр шууд тэр чигээр нь бичиж ашиглана учир нь тэр function өөр газар ашиглахгүй зөвхөн тэр function ашиглах бол илүү үйлдэл хийх шаардлаггүй юм
 
 // HOLD товчны евент листэнэр
 document.querySelector(".btn-hold").addEventListener("click", function () {
-  //Уг тоглогчын цуглуулсан ээлжийн оноог global оноон дээр нэмж өгнө
-  scores[activePlayer] = scores[activePlayer] + roundScores;
+  if (isGameOver === false) {
+    //Уг тоглогчын цуглуулсан ээлжийн оноог global оноон дээр нэмж өгнө
+    scores[activePlayer] = scores[activePlayer] + roundScores;
 
-  //Дэлгэцэн дээр оноог нь өөрчилнө
-  document.getElementById("score-" + activePlayer).textContent =
-    scores[activePlayer];
+    //Дэлгэцэн дээр оноог нь өөрчилнө
+    document.getElementById("score-" + activePlayer).textContent =
+      scores[activePlayer];
 
-  //Уг тоглогчийг хожсон эсэхийг (оноо нь 100 с их эсэхийг шалгах )
-  if (scores[activePlayer] >= 10) {
-    //Ялагч гэсэн текстийг нэрнийх нь оронд гаргана
-    document.getElementById("name-" + activePlayer).textContent = "WINNER!!!!";
-    document
-      .querySelector(".player-" + activePlayer + "-panel")
-      .classList.add("winner");
-    document
-      .querySelector(".player-" + activePlayer + "-panel")
-      .classList.remove("active");
+    //Уг тоглогчийг хожсон эсэхийг (оноо нь 100 с их эсэхийг шалгах )
+    if (scores[activePlayer] >= 10) {
+      //Тоглоомыг дууссан төлөвт оруулна
+      isGameOver = true;
+
+      //Ялагч гэсэн текстийг нэрнийх нь оронд гаргана
+      document.getElementById("name-" + activePlayer).textContent =
+        "WINNER!!!!";
+      document
+        .querySelector(".player-" + activePlayer + "-panel")
+        .classList.add("winner");
+      document
+        .querySelector(".player-" + activePlayer + "-panel")
+        .classList.remove("active");
+    } else {
+      //Тоглогчын ээлжийг солино
+      switchToNextPlayer();
+    }
   } else {
-    //Тоглогчын ээлжийг солино
-    switchToNextPlayer();
+    alert(
+      "Тоглоом дууссан байна аа NEW GAME товчыг даран дахин тоглоомийг эхлүүлнэ үү!"
+    );
   }
 });
 //Энэ function нь тоглогчийн ээлжийг дараачийн хүн лүү шилжүүлнэ
@@ -98,6 +125,3 @@ function switchToNextPlayer() {
   //Шоог алга болгоно
   diceDom.style.display = "none";
 }
-
-//Шинээр тоглоомийг эхлүүлэх eventListener
-document.querySelector(".btn-new").addEventListener("click", newGame);
