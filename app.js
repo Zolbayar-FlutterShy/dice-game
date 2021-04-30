@@ -36,24 +36,48 @@ document.querySelector(".btn-roll").addEventListener("click", function () {
     ).textContent = roundScores;
   } else {
     //1 буусан тул тоглогчийн ээлжийг энэ хэсэгт сольж өгнө
-    //Энэ тоглогчийн ээлжиндээ цуглуулсан оноог 0 болгоно
-    document.getElementById("current-" + activePlayer).textContent = "0";
-    roundScores = 0;
-    //Тоглогчын ээлжийг нөгөө тоглогч руу шилжүүлнэ
-    //Хэрэв идэвхитэй тоглогч нь 0 байвал идэвхитэй тоглогчийг 1 болго
-    //Үгүй бол 0 болго
-    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0); //if statement ийг товчоор ингэж бичиж болно
-    // if(activePlayer === 0){
-    //   activePlayer = 1;
-    // }esle{
-    //   activePlayer = 0;
-    // }
-
-    //Улаан цэгийг шилжүүлэх\
-    document.querySelector(".player-0-panel").classList.toggle("active"); //Ингэж тухайн Dom ийн class руу хандаж дотор байгаа class ийг нэмж хасж г.м үйлдлүүдийг хийж болно toggle бол хэрвээ энэ class дотор active class байвал устгана байхгүй бол нэмнэ remove add хоёрыг хослуулсан нэг хэлбэр
-    document.querySelector(".player-1-panel").classList.toggle("active");
-
-    //Шоог алга болгоно
-    diceDom.style.display = "none";
+    switchToNextPlayer();
   }
 }); //Энэ нь eventListener function маань click function болон shooShid гэсэн function ийг callBack ашиглан argument болгон авч байна аа callBack нь function дотор funtction Argument болгож авч тэгээд тэр function ийг ашиглахийг хэлнэ. Anonymous нь function ийг нэргүйгээр шууд тэр чигээр нь бичиж ашиглана учир нь тэр function өөр газар ашиглахгүй зөвхөн тэр function ашиглах бол илүү үйлдэл хийх шаардлаггүй юм
+
+// HOLD товчны евент листэнэр
+document.querySelector(".btn-hold").addEventListener("click", function () {
+  //Уг тоглогчын цуглуулсан ээлжийн оноог global оноон дээр нэмж өгнө
+  scores[activePlayer] = scores[activePlayer] + roundScores;
+
+  //Дэлгэцэн дээр оноог нь өөрчилнө
+  document.getElementById("score-" + activePlayer).textContent =
+    scores[activePlayer];
+
+  //Уг тоглогчийг хожсон эсэхийг (оноо нь 100 с их эсэхийг шалгах )
+  if (scores[activePlayer] >= 100) {
+    //Ялагч гэсэн текстийг нэрнийх нь оронд гаргана
+    document.getElementById("name-" + activePlayer).textContent = "WINNER!!!!";
+    document
+      .querySelector(".player-" + activePlayer + "-panel")
+      .classList.add("winner");
+    document
+      .querySelector(".player-" + activePlayer + "-panel")
+      .classList.remove("active");
+  } else {
+    //Тоглогчын ээлжийг солино
+    switchToNextPlayer();
+  }
+});
+//Энэ function нь тоглогчийн ээлжийг дараачийн хүн лүү шилжүүлнэ
+function switchToNextPlayer() {
+  //Энэ тоглогчийн ээлжиндээ цуглуулсан оноог 0 болгоно
+  roundScores = 0;
+  document.getElementById("current-" + activePlayer).textContent = "0";
+  //Тоглогчын ээлжийг нөгөө тоглогч руу шилжүүлнэ
+  //Хэрэв идэвхитэй тоглогч нь 0 байвал идэвхитэй тоглогчийг 1 болго
+  //Үгүй бол 0 болго
+  activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0); //if statement ийг товчоор ингэж бичиж болно
+
+  //Улаан цэгийг шилжүүлэх
+  document.querySelector(".player-0-panel").classList.toggle("active"); //Ингэж тухайн Dom ийн class руу хандаж дотор байгаа class ийг нэмж хасж г.м үйлдлүүдийг хийж болно toggle бол хэрвээ энэ class дотор active class байвал устгана байхгүй бол нэмнэ remove add хоёрыг хослуулсан нэг хэлбэр
+  document.querySelector(".player-1-panel").classList.toggle("active");
+
+  //Шоог алга болгоно
+  diceDom.style.display = "none";
+}
