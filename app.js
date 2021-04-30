@@ -1,26 +1,43 @@
+var diceDom = document.querySelector(".dice"); // querySelector нь browser ийг илүү ачааллуулдаг тул дахин энэ Dom ийг дуудхад дахин querySelect хийлгүйгээр энийгээ нэг хувьсагчид хадгалж өгөөд тэгээд энэ Dom ийг ашиглахаар бол энэ хувьсагчийг дуудхад лл хангалттай юм
 //Тоглогчийн ээлжийг хадгалдаг хувьсагч, нэгдүгээр тоглогчийг 0, хоёрдугаар тоглогчийг 1 гэж тэмдэглэе!
 var activePlayer = 0;
 //Тоглогчдын цуглуулсан оноог харуулдаг хувьсагч
 var scores = [0, 0];
 //Тоглогчдын эээлжиндээ цуглуулж байгаа оноог хадгалдаг хувьсагч
 var roundScores = 0;
-//Шооны аль талаараа буусныг хадгалдаг хувьсагч хэрэгтэй, 1 - 6 гэсэн утгыг энэ хувьсагчид санамсаргүй олгож өгнө
+newGame();
+//Тоглоомд шинээр бэлтгэе.
+function newGame() {
+  //Тоглогчийн ээлжийг хадгалдаг хувьсагч, нэгдүгээр тоглогчийг 0, хоёрдугаар тоглогчийг 1 гэж тэмдэглэе!
+  activePlayer = 0;
+  //Тоглогчдын цуглуулсан оноог харуулдаг хувьсагч
+  scores = [0, 0];
+  //Тоглогчдын эээлжиндээ цуглуулж байгаа оноог хадгалдаг хувьсагч
+  roundScores = 0;
+  // document.querySelector("#score-0").textContent = dice;
+  // document.querySelector("#score-1").textContent = dice; //Хэрэв textContent ийн оронд innerHTML байх юм бол HTML ашиглаж тухайн зүйлийг өөрчилж болно
+  // document.querySelector(".dice").style.display = "none"; //style ийг ашиглан css дотор бичигдсэн зүйлүүдийг өөрчилж болно
+  //Програмд бэлтгэе
+  document.getElementById("score-0").textContent = "0";
+  document.getElementById("score-1").textContent = "0";
+  document.getElementById("current-0").textContent = "0";
+  document.getElementById("current-1").textContent = "0";
 
-// document.querySelector("#score-0").textContent = dice;
-// document.querySelector("#score-1").textContent = dice; //Хэрэв textContent ийн оронд innerHTML байх юм бол HTML ашиглаж тухайн зүйлийг өөрчилж болно
-// document.querySelector(".dice").style.display = "none"; //style ийг ашиглан css дотор бичигдсэн зүйлүүдийг өөрчилж болно
-//Програмд бэлтгэе
-document.getElementById("score-0").textContent = "0";
-document.getElementById("score-1").textContent = "0";
-document.getElementById("current-0").textContent = "0";
-document.getElementById("current-1").textContent = "0";
-var diceDom = document.querySelector(".dice"); // querySelector нь browser ийг илүү ачааллуулдаг тул дахин энэ Dom ийг дуудхад дахин querySelect хийлгүйгээр энийгээ нэг хувьсагчид хадгалж өгөөд тэгээд энэ Dom ийг ашиглахаар бол энэ хувьсагчийг дуудхад лл хангалттай юм
+  //Тоглогчдын нэрийг буцааж гаргах
+  document.getElementById("name-0").textContent = "Player 1";
+  document.getElementById("name-1").textContent = "Player 2";
+  document.querySelector(".player-0-panel").classList.remove("winner");
+  document.querySelector(".player-1-panel").classList.remove("winner");
+  //Active player ийн тэмдэг
+  document.querySelector(".player-0-panel").classList.add("active");
 
+  diceDom.style.display = "none";
+}
 document.querySelector(".btn-roll").addEventListener("click", function () {
   //Шооны зургыг веб дээр гаргаж ирнэ.
   diceDom.style.display = "block";
-  //1 - 6 доторх санамсаргүй тоо гаргаж ирнэ
 
+  //1 - 6 доторх санамсаргүй тоо гаргаж ирнэ
   var diceNumber = Math.floor(Math.random() * 6) + 1;
 
   //Буусан санамсаргүй тоонд харгалзах шооны зургыг веб дээр гаргаж ирнэ.
@@ -50,7 +67,7 @@ document.querySelector(".btn-hold").addEventListener("click", function () {
     scores[activePlayer];
 
   //Уг тоглогчийг хожсон эсэхийг (оноо нь 100 с их эсэхийг шалгах )
-  if (scores[activePlayer] >= 100) {
+  if (scores[activePlayer] >= 10) {
     //Ялагч гэсэн текстийг нэрнийх нь оронд гаргана
     document.getElementById("name-" + activePlayer).textContent = "WINNER!!!!";
     document
@@ -81,3 +98,6 @@ function switchToNextPlayer() {
   //Шоог алга болгоно
   diceDom.style.display = "none";
 }
+
+//Шинээр тоглоомийг эхлүүлэх eventListener
+document.querySelector(".btn-new").addEventListener("click", newGame);
